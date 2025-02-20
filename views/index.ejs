@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerador de Casos de Teste</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+</head>
+<body>
+  <h1>Gerador de Casos de Teste</h1>
+  <form id="testForm" action="/gerar-testes" method="POST" enctype="multipart/form-data">
+    <label>Escolha como deseja inserir o contexto:</label><br>
+    <button type="button" id="btnTexto" class="option-button">Input de Texto</button>
+    <button type="button" id="btnArquivo" class="option-button">Upload de Arquivo</button><br><br>
+
+    <div id="inputTextoDiv">
+      <div id="editor" style="height: 200px;"></div>
+      <input type="hidden" name="contexto" id="contexto">
+    </div>
+
+    <div id="inputArquivoDiv" style="display: none;">
+      <label for="arquivo" class="custom-file-upload">Escolher Arquivo</label>
+      <input type="file" id="arquivo" name="arquivo" accept=".pdf,.pptx,.doc,.docx,.txt"><br><br>
+    </div>
+
+    <input type="hidden" name="downloadType" id="downloadType" value="json">
+    <button type="button" id="generateButton">Gerar Casos de Teste</button>
+  </form>
+
+  <!-- Modal -->
+  <div id="formatModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Escolha o formato do arquivo</h2>
+      <button id="downloadTxt">Baixar como TXT</button>
+      <button id="downloadJson">Baixar como JSON</button> <!-- Botão de JSON reinserido -->
+    </div>
+  </div>
+
+  <script>
+    var quill = new Quill('#editor', {
+      theme: 'snow'
+    });
+
+    document.getElementById('generateButton').addEventListener('click', function() {
+      document.querySelector('input[name=contexto]').value = quill.root.innerHTML;
+      document.getElementById('formatModal').style.display = 'block';
+    });
+
+    document.querySelector('.close').addEventListener('click', function() {
+      document.getElementById('formatModal').style.display = 'none';
+    });
+
+    document.getElementById('downloadTxt').addEventListener('click', function() {
+      document.getElementById('downloadType').value = 'txt';
+      document.getElementById('testForm').submit();
+      document.getElementById('formatModal').style.display = 'none';
+    });
+    document.getElementById('downloadJson').addEventListener('click', function() {
+      document.getElementById('downloadType').value = 'json';
+      document.getElementById('testForm').submit();
+      document.getElementById('formatModal').style.display = 'none';
+    });
+
+    document.getElementById('btnTexto').addEventListener('click', function() {
+      document.getElementById('inputTextoDiv').style.display = 'block';
+      document.getElementById('inputArquivoDiv').style.display = 'none';
+    });
+
+    document.getElementById('btnArquivo').addEventListener('click', function() {
+      document.getElementById('inputTextoDiv').style.display = 'none';
+      document.getElementById('inputArquivoDiv').style.display = 'block';
+    });
+  </script>
+</body>
+</html>
